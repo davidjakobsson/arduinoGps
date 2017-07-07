@@ -58,5 +58,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\gpsMessageParser\gpsMessageParser.csproj">
+      <Project>{D31A0E42-5FD5-4B30-8D95-D391B2E8069D}</Project>
+      <Name>gpsMessageParser</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
