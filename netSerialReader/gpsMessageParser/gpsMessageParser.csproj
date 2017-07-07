@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Entities\GpsData.cs" />
     <Compile Include="Parsers\GprmcParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
