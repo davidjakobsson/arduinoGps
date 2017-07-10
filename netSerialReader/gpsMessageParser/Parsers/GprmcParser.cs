@@ -21,10 +21,34 @@ namespace gpsMessageParser.Parsers
 
             gpsData.DirectionDegrees = ParseDegrees(gprmcArray[8]);
             gpsData.UtcDateTime = ParseUtcDate(gprmcArray[1], gprmcArray[9]);
-            //gpsData.SpeedKnots =
-            
+            gpsData.SpeedKnots = ParseSpeedKnots(gprmcArray[7]);
+            gpsData.SpeedKph = ConvertKnotsToKph(gpsData.SpeedKnots);
 
             return gpsData;
+        }
+
+        private decimal? ConvertKnotsToKph(decimal? speedKnots)
+        {
+            if (speedKnots != null)
+            {
+                decimal knots = speedKnots.Value;
+                return knots * (decimal)1.852;
+            }
+            return null;
+        }
+
+        private decimal? ParseSpeedKnots(string knotsString)
+        {
+            if (!string.IsNullOrEmpty(knotsString))
+            {
+                decimal knots;
+                if (decimal.TryParse(knotsString, style, culture, out knots))
+                {
+                    return knots;
+                }
+            }
+            return null;
+
         }
 
         private DateTime? ParseUtcDate(string timeString, string dateString)
