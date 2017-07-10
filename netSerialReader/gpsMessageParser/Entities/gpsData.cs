@@ -11,8 +11,8 @@ namespace gpsMessageParser.Entities
         public string Latitude { get; set; }
         public string  Longitude { get; set; }
         public DateTime? UtcDateTime { get; set; }
-        public double? SpeedKph { get; set; }
-        public double? SpeedKnots { get; set; }
+        public decimal? SpeedKph { get; set; }
+        public decimal? SpeedKnots { get; set; }
         public int? DirectionDegrees { get; set; }
 
         public GpsData()

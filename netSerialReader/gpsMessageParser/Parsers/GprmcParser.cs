@@ -21,6 +21,7 @@ namespace gpsMessageParser.Parsers
 
             gpsData.DirectionDegrees = ParseDegrees(gprmcArray[8]);
             gpsData.UtcDateTime = ParseUtcDate(gprmcArray[1], gprmcArray[9]);
+            //gpsData.SpeedKnots =
             
 
             return gpsData;

@@ -22,8 +22,8 @@ namespace gpsMessageParserTests
             Assert.Equal("59.277673°N", gpsData.Latitude);
             Assert.Equal("15.211885°E", gpsData.Longitude);
             Assert.Equal(187, gpsData.DirectionDegrees);
-            Assert.Equal(0.2, gpsData.SpeedKnots);
-            Assert.Equal(0.2*1.852, gpsData.SpeedKph);
+            Assert.Equal(Convert.ToDecimal(0.18), gpsData.SpeedKnots);
+            Assert.Equal(Convert.ToDecimal(0.18*1.852), gpsData.SpeedKph);
 
             Assert.Equal(11, gpsData.UtcDateTime.Value.Hour);
             Assert.Equal(58, gpsData.UtcDateTime.Value.Minute);
@@ -86,8 +86,8 @@ namespace gpsMessageParserTests
 
             var gpsData = gprmcParser.ParseGprmc(gprmcMessage);
 
-            Assert.Equal(0.18, gpsData.SpeedKnots);
-            Assert.Equal(0.18 * 1.852, gpsData.SpeedKph);
+            Assert.Equal(Convert.ToDecimal(0.18), gpsData.SpeedKnots);
+            Assert.Equal(Convert.ToDecimal(0.18 * 1.852), gpsData.SpeedKph);
 
 
         }
