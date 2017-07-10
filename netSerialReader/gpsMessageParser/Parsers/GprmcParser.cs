@@ -24,7 +24,86 @@ namespace gpsMessageParser.Parsers
             gpsData.SpeedKnots = ParseSpeedKnots(gprmcArray[7]);
             gpsData.SpeedKph = ConvertKnotsToKph(gpsData.SpeedKnots);
 
+            gpsData.Latitude = ParseLatLong(gprmcArray[3], gprmcArray[4]);
+            gpsData.Longitude = ParseLatLong(gprmcArray[5], gprmcArray[6]);
+
             return gpsData;
+        }
+
+        private string ParseLatLong(string nmeaDegreesAndMinutes, string hemisphere)
+        {
+            string degrees = NmeaToDegreesParser(nmeaDegreesAndMinutes);
+            string returnvalue = degrees + "°";
+            if (!string.IsNullOrEmpty(hemisphere))
+            {
+                returnvalue = returnvalue + hemisphere;
+            }
+            return returnvalue;
+            
+        }
+
+        private string NmeaToDegreesParser(string nmeaDegreesAndMinutes)
+        {
+            //The format for NMEA coordinates is (d)ddmm.mmmm
+            //d = degrees and m = minutes
+            //There are 60 minutes in a degree so divide the minutes by 60 and add that to the degrees.
+
+            decimal decimalMinutes;
+            decimal decimalDegrees;
+
+            try
+            {
+                var nmeaArray = nmeaDegreesAndMinutes.Split('.');
+
+                string degrees = string.Empty;
+                string minutes = string.Empty;
+
+                switch (nmeaArray[0].Length)
+                {
+                    case 3:
+                        degrees = nmeaArray[0].Substring(0, 1);
+                        minutes = nmeaArray[0].Substring(1, 2) + '.' + nmeaArray[1];
+                        break;
+                    case 4:
+                        degrees = nmeaArray[0].Substring(0, 2);
+                        minutes = nmeaArray[0].Substring(2, 2) + '.' + nmeaArray[1];
+                        break;
+                    case 5:
+                        degrees = nmeaArray[0].Substring(0, 3);
+                        minutes = nmeaArray[0].Substring(3, 2) + '.' + nmeaArray[1];
+                        break;
+
+                    default:
+                        minutes = nmeaArray[0] + '.' + nmeaArray[1];
+                        break;
+
+                }
+
+                if (!string.IsNullOrEmpty(degrees))
+                {
+                    if (decimal.TryParse(degrees, style, culture, out decimalDegrees) &&  decimal.TryParse(minutes, style, culture, out decimalMinutes))
+                    {
+                        return Convert.ToString(Math.Round(decimalDegrees + (decimalMinutes / 60), 6), culture);
+                    }
+                }
+                else
+                {
+                    if (decimal.TryParse(minutes, style, culture, out decimalMinutes))
+                    {
+                        return Convert.ToString(Math.Round((decimalMinutes / 60), 6), culture);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                //TODO Log?
+                Console.WriteLine(e);
+                throw;
+            }
+
+
+            return null;
         }
 
         private decimal? ConvertKnotsToKph(decimal? speedKnots)
