@@ -17,16 +17,23 @@ namespace gpsMessageParser.Parsers
             var gprmcArray = gprmcString.Split(',');
 
             GpsData gpsData = new GpsData();
-            
-            decimal degrees;
-            if (decimal.TryParse(gprmcArray[8], style, culture, out degrees))
-            {
-                degrees = Math.Round(degrees);
-                gpsData.DirectionDegrees = Convert.ToInt32(degrees);
-            }
 
+
+            gpsData.DirectionDegrees = ParseDegrees(gprmcArray[8]);
+            
 
             return gpsData;
+        }
+
+        private int? ParseDegrees(string degreesString)
+        {
+            decimal degrees;
+            if (decimal.TryParse(degreesString, style, culture, out degrees))
+            {
+                degrees = Math.Round(degrees);
+                return Convert.ToInt32(degrees);
+            }
+            return null;
         }
     }
 }
