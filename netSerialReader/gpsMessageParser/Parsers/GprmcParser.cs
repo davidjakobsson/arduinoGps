@@ -20,9 +20,33 @@ namespace gpsMessageParser.Parsers
 
 
             gpsData.DirectionDegrees = ParseDegrees(gprmcArray[8]);
+            gpsData.UtcDateTime = ParseUtcDate(gprmcArray[1], gprmcArray[9]);
             
 
             return gpsData;
+        }
+
+        private DateTime? ParseUtcDate(string timeString, string dateString)
+        {
+            try
+            {
+                int day = Convert.ToInt32(dateString.Substring(0, 2)); 
+                int month = Convert.ToInt32(dateString.Substring(2, 2));
+                int year = Convert.ToInt32("20" + dateString.Substring(4, 2));
+
+                int hour = Convert.ToInt32(timeString.Substring(0, 2));
+                int minute = Convert.ToInt32(timeString.Substring(2, 2));
+                int second = Convert.ToInt32(timeString.Substring(4, 2));
+                
+                return new DateTime(year, month, day, hour, minute, second);
+
+            }
+            catch (Exception e)
+            {
+                //TODO LOG?
+                
+            }
+            return null;
         }
 
         private int? ParseDegrees(string degreesString)
