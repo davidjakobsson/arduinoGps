@@ -10,9 +10,19 @@ namespace gpsMessageParser.Entities
     {
         public string Latitude { get; set; }
         public string  Longitude { get; set; }
-        public DateTime UtcDateTime { get; set; }
-        public double SpeedKph { get; set; }
-        public double SpeedKnots { get; set; }
-        public int DirectionDegrees { get; set; }
+        public DateTime? UtcDateTime { get; set; }
+        public double? SpeedKph { get; set; }
+        public double? SpeedKnots { get; set; }
+        public int? DirectionDegrees { get; set; }
+
+        public GpsData()
+        {
+            Latitude = null;
+            Longitude = null;
+            UtcDateTime = null;
+            SpeedKph = null;
+            SpeedKnots = null;
+            DirectionDegrees = null;
+        }
     }
 }

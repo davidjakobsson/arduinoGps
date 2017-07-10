@@ -25,12 +25,12 @@ namespace gpsMessageParserTests
             Assert.Equal(0.2, gpsData.SpeedKnots);
             Assert.Equal(0.2*1.852, gpsData.SpeedKph);
 
-            Assert.Equal(11, gpsData.UtcDateTime.Hour);
-            Assert.Equal(58, gpsData.UtcDateTime.Minute);
-            Assert.Equal(50, gpsData.UtcDateTime.Second);
-            Assert.Equal(7, gpsData.UtcDateTime.Day);
-            Assert.Equal(7, gpsData.UtcDateTime.Month);
-            Assert.Equal(2017, gpsData.UtcDateTime.Year);
+            Assert.Equal(11, gpsData.UtcDateTime.Value.Hour);
+            Assert.Equal(58, gpsData.UtcDateTime.Value.Minute);
+            Assert.Equal(50, gpsData.UtcDateTime.Value.Second);
+            Assert.Equal(7, gpsData.UtcDateTime.Value.Day);
+            Assert.Equal(7, gpsData.UtcDateTime.Value.Month);
+            Assert.Equal(2017, gpsData.UtcDateTime.Value.Year);
 
         }
 
@@ -43,9 +43,9 @@ namespace gpsMessageParserTests
 
             var gpsData = gprmcParser.ParseGprmc(gprmcMessage);
 
-            Assert.Equal(11, gpsData.UtcDateTime.Hour);
-            Assert.Equal(58, gpsData.UtcDateTime.Minute);
-            Assert.Equal(50, gpsData.UtcDateTime.Second);
+            Assert.Equal(11, gpsData.UtcDateTime.Value.Hour);
+            Assert.Equal(58, gpsData.UtcDateTime.Value.Minute);
+            Assert.Equal(50, gpsData.UtcDateTime.Value.Second);
 
 
         }
@@ -58,9 +58,9 @@ namespace gpsMessageParserTests
             var gprmcParser = new GprmcParser();
 
             var gpsData = gprmcParser.ParseGprmc(gprmcMessage);
-            Assert.Equal(7, gpsData.UtcDateTime.Day);
-            Assert.Equal(7, gpsData.UtcDateTime.Month);
-            Assert.Equal(2017, gpsData.UtcDateTime.Year);
+            Assert.Equal(7, gpsData.UtcDateTime.Value.Day);
+            Assert.Equal(7, gpsData.UtcDateTime.Value.Month);
+            Assert.Equal(2017, gpsData.UtcDateTime.Value.Year);
 
         }
 
