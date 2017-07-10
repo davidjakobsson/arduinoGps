@@ -86,8 +86,8 @@ namespace gpsMessageParserTests
 
             var gpsData = gprmcParser.ParseGprmc(gprmcMessage);
 
-            Assert.Equal(0.2, gpsData.SpeedKnots);
-            Assert.Equal(0.2 * 1.852, gpsData.SpeedKph);
+            Assert.Equal(0.18, gpsData.SpeedKnots);
+            Assert.Equal(0.18 * 1.852, gpsData.SpeedKph);
 
 
         }
