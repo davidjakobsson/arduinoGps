@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Data;
 using System.IO.Ports;
 using System.Threading;
+using netSerialReader;
+using netSerialReader.Database;
 
-public class netSerialReader
+public class NetSerialReader
 {
     static bool _continue;
     static SerialPort _serialPort;
@@ -64,6 +67,13 @@ public class netSerialReader
             try
             {
                 string message = _serialPort.ReadLine();
+                AppSettingsProvider appSettingsProvider = new AppSettingsProvider();
+                if (appSettingsProvider.SaveRawToDatabase)
+                {
+                    GpsRawData gpsRawData = new GpsRawData();
+                    gpsRawData.SaveGpsRawData(message);
+                }
+                
                 Console.WriteLine(message);
             }
             catch (TimeoutException) { }
