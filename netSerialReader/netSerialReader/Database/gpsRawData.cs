@@ -22,16 +22,16 @@ namespace netSerialReader.Database
 
                 try
                 {
-                    //SqlCommand command = new SqlCommand();
-                    //connection.Open();
-                    //command.Connection = connection;
+                    SqlCommand command = new SqlCommand();
+                    connection.Open();
+                    command.Connection = connection;
 
-                    //command.CommandText = "select Id, Name, Description, Created, LastModified from ContactType ";
+                    command.Parameters.Add(new SqlParameter("Data", gpsRawData));
+                    command.Parameters.Add(new SqlParameter("Device", "TestDevice"));
 
+                    command.CommandText = "Insert into gprmc (Data, Device) values (@Data, @Device)";
 
-                    //SqlDataReader reader = command.ExecuteReader();
-
-                    
+                    command.ExecuteNonQuery();
 
                 }
                 catch (Exception e)
