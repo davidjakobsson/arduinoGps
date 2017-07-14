@@ -26,10 +26,11 @@ namespace netSerialReader.Database
                     connection.Open();
                     command.Connection = connection;
 
+                    command.Parameters.Add(new SqlParameter("MessageType", gpsRawData.Substring(1, 5)));
                     command.Parameters.Add(new SqlParameter("Data", gpsRawData));
                     command.Parameters.Add(new SqlParameter("Device", "TestDevice"));
 
-                    command.CommandText = "Insert into gprmc (Data, Device) values (@Data, @Device)";
+                    command.CommandText = "Insert into gprmc (MessageType, Data, Device) values (@MessageType, @Data, @Device)";
 
                     command.ExecuteNonQuery();
 
