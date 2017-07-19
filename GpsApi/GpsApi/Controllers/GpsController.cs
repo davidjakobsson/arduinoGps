@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using GpsApi.Helpers;
 using GpsApi.Models;
 
 namespace GpsApi.Controllers
@@ -32,7 +34,66 @@ namespace GpsApi.Controllers
 
         public void Post([FromBody]GpsData data)
         {
-            int i = 1;
+            SaveToDatabase(data);
+        }
+
+        private void SaveToDatabase(GpsData data)
+        {
+            AppSettingsProvider appSettingsProvider = new AppSettingsProvider();
+
+            using (SqlConnection connection = new SqlConnection(appSettingsProvider.DatabaseConnectionString))
+            {
+
+
+                try
+                {
+                    SqlCommand command = new SqlCommand();
+                    connection.Open();
+                    command.Connection = connection;
+
+                    command.Parameters.Add(new SqlParameter("Device", data.Device));
+                    command.Parameters.Add(new SqlParameter("Latitude", data.Latitude));
+                    command.Parameters.Add(new SqlParameter("Longitude", data.Longitude));
+                    if (data.SpeedKnots.HasValue)
+                    {
+                       command.Parameters.Add(new SqlParameter("SpeedKnots", data.SpeedKnots.Value)); 
+                    }
+                    else
+                    {
+                        command.Parameters.Add(new SqlParameter("SpeedKnots", DBNull.Value));
+                    }
+                    if (data.SpeedKph.HasValue)
+                    {
+                        command.Parameters.Add(new SqlParameter("SpeedKph", data.SpeedKph.Value));
+                    }
+                    else
+                    {
+                        command.Parameters.Add(new SqlParameter("SpeedKph", DBNull.Value));
+                    }
+                    if (data.UtcDateTime.HasValue)
+                    {
+                        command.Parameters.Add(new SqlParameter("UtcDateTime", data.UtcDateTime));
+                    }
+                    else
+                    {
+                        command.Parameters.Add(new SqlParameter("UtcDateTime", DBNull.Value));
+                    }
+                    
+
+                    command.CommandText = "Insert into GpsData (Device, Latitude, Longitude, SpeedKnots, SpeedKph, UtcDateTime) values (@Device, @Latitude, @Longitude, @SpeedKnots, @SpeedKph, @UtcDateTime)";
+
+                    command.ExecuteNonQuery();
+
+                }
+                catch (Exception e)
+                {
+                    //TODO log?
+
+                    throw e;
+                }
+
+
+            }
         }
 
         // POST: api/Gps
