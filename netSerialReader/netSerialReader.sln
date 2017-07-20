@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gpsMessageParserTests", "gp
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "gpsRawData", "gpsRawData\gpsRawData.sqlproj", "{F44204D8-EFAF-4D38-9779-1506D1D1D90C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gpsWebApi", "gpsWebApi\gpsWebApi.csproj", "{FB9C0892-F504-4197-B4D5-82D6E326C3AF}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "gpsDatabase", "gpsDatabase\gpsDatabase.sqlproj", "{F637A56A-C989-427E-8514-A27485D618B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +37,12 @@ Global
 		{F44204D8-EFAF-4D38-9779-1506D1D1D90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F44204D8-EFAF-4D38-9779-1506D1D1D90C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F44204D8-EFAF-4D38-9779-1506D1D1D90C}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{FB9C0892-F504-4197-B4D5-82D6E326C3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB9C0892-F504-4197-B4D5-82D6E326C3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB9C0892-F504-4197-B4D5-82D6E326C3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB9C0892-F504-4197-B4D5-82D6E326C3AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F637A56A-C989-427E-8514-A27485D618B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F637A56A-C989-427E-8514-A27485D618B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F637A56A-C989-427E-8514-A27485D618B3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F637A56A-C989-427E-8514-A27485D618B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F637A56A-C989-427E-8514-A27485D618B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F637A56A-C989-427E-8514-A27485D618B3}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
