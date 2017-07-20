@@ -32,9 +32,18 @@ namespace GpsApi.Controllers
             return "value";
         }
 
-        public void Post([FromBody]GpsData data)
+        public HttpResponseMessage Post([FromBody]GpsData data)
         {
-            SaveToDatabase(data);
+            try
+            {
+                SaveToDatabase(data);
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            }
+            
         }
 
         private void SaveToDatabase(GpsData data)
