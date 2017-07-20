@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
+using gpsMessageParser.Parsers;
+using simpleGpsApiClient.Helpers;
 
 namespace simpleGpsApiClient
 {
@@ -29,12 +33,68 @@ namespace simpleGpsApiClient
             GpsData gpsExample = CreateExampleData();
             HttpResponseMessage response = await client.PostAsJsonAsync("api/gps", gpsExample);
 
-            var gpsData = GetGpsExampleAsync("api/gps");
+            //var gpsDataToSend = GetDataFromRaw();
+
+            //foreach (var gpsData in gpsDataToSend)
+            //{
+            //    HttpResponseMessage response = await client.PostAsJsonAsync("api/gps", gpsData);
+            //}
+
+            //var gpsData = GetGpsExampleAsync("api/gps");
 
             Console.ReadLine();
         }
 
-        
+        private static List<GpsData> GetDataFromRaw()
+        {
+            List<GpsData> gpsData = new List<GpsData>();
+            GprmcParser parser = new GprmcParser();
+
+            AppSettingsProvider appSettingsProvider = new AppSettingsProvider();
+
+            using (SqlConnection connection = new SqlConnection(appSettingsProvider.DatabaseConnectionString))
+            {
+
+                //GetRawData
+                try
+                {
+                    SqlCommand command = new SqlCommand();
+                    connection.Open();
+                    command.Connection = connection;
+
+
+                    command.Parameters.Add(new SqlParameter("MessageType", "GPRMC"));
+
+                    command.CommandText = "select Id, MessageType, Data, Device, Parsed from gprmc where Parsed = 0 and MessageType = @MessageType";
+
+                    var reader = command.ExecuteReader();
+                    int i = 0;
+                    while (reader.Read() && i < 100)
+                    {
+                        var dataString = reader.GetString(reader.GetOrdinal("Data"));
+                        var parsedGpsData = parser.ParseGprmc(dataString);
+                        var device = reader.GetString(reader.GetOrdinal("Device"));
+                        GpsData gpsDataToSend = new GpsData(device, parsedGpsData.Latitude, parsedGpsData.Longitude, parsedGpsData.UtcDateTime, parsedGpsData.SpeedKph, parsedGpsData.SpeedKnots, parsedGpsData.DirectionDegrees);
+                        gpsData.Add(gpsDataToSend);
+                        i++;
+                    }
+
+
+                }
+                catch (Exception e)
+                {
+                    //TODO log?
+
+                    //throw e;
+                    return gpsData;
+                }
+
+
+            }
+
+            throw new NotImplementedException();
+        }
+
 
         static async Task<GpsData> GetGpsExampleAsync(string path)
         {
