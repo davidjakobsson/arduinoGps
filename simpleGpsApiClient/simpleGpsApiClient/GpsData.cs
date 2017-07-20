@@ -8,6 +8,23 @@ namespace simpleGpsApiClient
 {
     public class GpsData
     {
+        public GpsData()
+        {
+            
+        }
+
+        public GpsData(string device, string latitude, string longitude, DateTime? utcDateTime, decimal? speedKph, decimal? speedKnots, int? directionDegrees)
+        {
+            Device = device;
+            Latitude = latitude;
+            Longitude = longitude;
+            UtcDateTime = utcDateTime;
+            SpeedKph = speedKph;
+            SpeedKnots = speedKnots;
+            DirectionDegrees = directionDegrees;
+        }
+
+
         public string Device { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
