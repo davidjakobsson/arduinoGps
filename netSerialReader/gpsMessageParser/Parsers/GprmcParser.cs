@@ -74,7 +74,16 @@ namespace gpsMessageParser.Parsers
                         break;
 
                     default:
-                        minutes = nmeaArray[0] + '.' + nmeaArray[1];
+                        try
+                        {
+                            minutes = nmeaArray[0] + '.' + nmeaArray[1];
+                        }
+                        catch (Exception e)
+                        {
+                            //Some error, log or fix
+                            minutes = string.Empty;
+                        }
+                        
                         break;
 
                 }
