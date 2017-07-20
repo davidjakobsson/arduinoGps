@@ -18,7 +18,8 @@ namespace simpleGpsApiClient
 
         static void Main(string[] args)
         {
-            
+
+
             RunAsync().Wait();
            
             
@@ -30,22 +31,71 @@ namespace simpleGpsApiClient
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            GpsData gpsExample = CreateExampleData();
-            HttpResponseMessage response = await client.PostAsJsonAsync("api/gps", gpsExample);
+           // GpsData gpsExample = CreateExampleData();
+           // HttpResponseMessage response = await client.PostAsJsonAsync("api/gps", gpsExample);
+            int batchSize = 500;
 
-            //var gpsDataToSend = GetDataFromRaw();
+            var gpsDataToSend = GetDataFromRaw(batchSize);
+            int batchnr = 0;
+            while (gpsDataToSend.Count > 0)
+            {
+                Console.WriteLine("Sending batch " + batchnr);
+                foreach (var gpsData in gpsDataToSend)
+                {
+                    HttpResponseMessage response = await client.PostAsJsonAsync("api/gps", gpsData);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MarkAsParsed(gpsData.Id);
+                    }
+                }
 
-            //foreach (var gpsData in gpsDataToSend)
-            //{
-            //    HttpResponseMessage response = await client.PostAsJsonAsync("api/gps", gpsData);
-            //}
+                Console.WriteLine("Reading next batch");
+
+                gpsDataToSend = GetDataFromRaw(batchSize);
+                batchnr++;
+            }
+            
 
             //var gpsData = GetGpsExampleAsync("api/gps");
-
+            Console.WriteLine("Finished " + batchnr + " batches.");
             Console.ReadLine();
         }
 
-        private static List<GpsData> GetDataFromRaw()
+        private static void MarkAsParsed(int gpsDataId)
+        {
+            AppSettingsProvider appSettingsProvider = new AppSettingsProvider();
+
+            using (SqlConnection connection = new SqlConnection(appSettingsProvider.DatabaseConnectionString))
+            {
+
+                try
+                {
+                    SqlCommand command = new SqlCommand();
+                    connection.Open();
+                    command.Connection = connection;
+
+
+                    command.Parameters.Add(new SqlParameter("Id", gpsDataId));
+
+                    command.CommandText = "update gprmc set Parsed = 1 where Id = @Id";
+
+                    command.ExecuteNonQuery();
+
+
+                }
+                catch (Exception e)
+                {
+                    //TODO log?
+
+                    throw e;
+                    
+                }
+
+
+            }
+        }
+
+        private static List<GpsData> GetDataFromRaw(int numberOfRows)
         {
             List<GpsData> gpsData = new List<GpsData>();
             GprmcParser parser = new GprmcParser();
@@ -55,7 +105,6 @@ namespace simpleGpsApiClient
             using (SqlConnection connection = new SqlConnection(appSettingsProvider.DatabaseConnectionString))
             {
 
-                //GetRawData
                 try
                 {
                     SqlCommand command = new SqlCommand();
@@ -69,12 +118,13 @@ namespace simpleGpsApiClient
 
                     var reader = command.ExecuteReader();
                     int i = 0;
-                    while (reader.Read() && i < 100)
+                    while (reader.Read() && i < numberOfRows)
                     {
                         var dataString = reader.GetString(reader.GetOrdinal("Data"));
                         var parsedGpsData = parser.ParseGprmc(dataString);
                         var device = reader.GetString(reader.GetOrdinal("Device"));
-                        GpsData gpsDataToSend = new GpsData(device, parsedGpsData.Latitude, parsedGpsData.Longitude, parsedGpsData.UtcDateTime, parsedGpsData.SpeedKph, parsedGpsData.SpeedKnots, parsedGpsData.DirectionDegrees);
+                        var id = reader.GetInt32(reader.GetOrdinal("Id"));
+                        GpsData gpsDataToSend = new GpsData(id, device, parsedGpsData.Latitude, parsedGpsData.Longitude, parsedGpsData.UtcDateTime, parsedGpsData.SpeedKph, parsedGpsData.SpeedKnots, parsedGpsData.DirectionDegrees);
                         gpsData.Add(gpsDataToSend);
                         i++;
                     }
@@ -92,7 +142,7 @@ namespace simpleGpsApiClient
 
             }
 
-            throw new NotImplementedException();
+            return gpsData;
         }
 
 
